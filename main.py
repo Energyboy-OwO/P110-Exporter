@@ -2,15 +2,13 @@ import argparse, asyncio, json, logging, os, signal, sys, time
 from pathlib import Path
 
 from yaml import safe_load as yaml_load
-from kasa import Device, Credentials
+from kasa import Discover, Credentials
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
 log = logging.getLogger("p110")
 
 async def _connect(host, email, pwd):
-    d = Device(host=host)
-    d.credentials = Credentials(email, pwd)
-    await d.connect()
+    d = await Discover.discover_single(host, credentials=Credentials(email, pwd), port=80)
     await d.update()
     return d
 
